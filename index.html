@@ -96,8 +96,9 @@
   @media (max-width: 560px) {
     .ew-card { padding: 16px 14px; }
     .ew-tab { padding: 12px 6px; font-size: 15px; }
-    .ew-head { padding: 18px 0 16px; }
-    .ew-title { font-size: 17px; }
+    /* Ô "x/100 ghế" nằm trên, tiêu đề nằm dưới (giống bản gốc) */
+    .ew-head { padding: 16px 0 14px; flex-direction: column-reverse; align-items: flex-start; gap: 12px; }
+    .ew-title { font-size: 19px; }
     .ew-badge { padding: 7px 8px; font-size: 11px; letter-spacing: .5px; }
     .ew-score { padding-top: 18px; }
     .ew-num { font-size: 56px; }
@@ -107,9 +108,27 @@
     .ew-seg { font-size: 15px; }
     .ew-seg.has { min-width: 28px; }
     .ew-gain { font-size: 13px; margin-top: 18px; padding-bottom: 20px; }
-    .ew-legend { gap: 8px; padding-top: 20px; font-size: 13px; }
-    .lg-grp { flex-direction: column; gap: 8px; }
-    .lg-r { align-items: flex-end; }
+    /* Chú thích dạng lưới 2 cột:
+       hàng 1: Không bầu lại (xanh) | Không bầu lại (đỏ)
+       hàng 2: Thắng (xanh)         | Thắng (đỏ)
+       hàng 3: Chưa có kết quả */
+    .ew-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 12px; padding-top: 20px; font-size: 13px; }
+    .lg-grp { display: contents; }
+    .lg-dn { grid-row: 1; grid-column: 1; }
+    .lg-rn { grid-row: 1; grid-column: 2; }
+    .lg-dw { grid-row: 2; grid-column: 1; }
+    .lg-rw { grid-row: 2; grid-column: 2; }
+    .lg-pd { grid-row: 3; grid-column: 1; }
+    .ew-legend.no-notup .lg-dw, .ew-legend.no-notup .lg-rw { grid-row: 1; }
+    .ew-legend.no-notup .lg-pd { grid-row: 2; }
+  }
+  @media (max-width: 360px) {
+    .ew-title { font-size: 17px; }
+    .ew-num { font-size: 48px; }
+    .ew-score { padding-top: 12px; }
+    .ew-barwrap { margin-top: 30px; }
+    .ew-gain { font-size: 12px; }
+    .ew-legend { gap: 10px; padding-top: 16px; font-size: 12px; }
     .ew-gain span:last-child { text-align: right; }
     .ew-foot { margin-top: 8px; }
   }
@@ -151,15 +170,15 @@
 
   <div class="ew-legend">
     <div class="lg-grp lg-d">
-      <span class="lg-notup"><i style="background:var(--dem-dark)"></i>Không bầu lại</span>
-      <span><i style="background:var(--dem)"></i>Thắng</span>
+      <span class="lg-notup lg-dn"><i style="background:var(--dem-dark)"></i>Không bầu lại</span>
+      <span class="lg-dw"><i style="background:var(--dem)"></i>Thắng</span>
     </div>
     <div class="lg-grp lg-p">
-      <span><i style="background:var(--pending)"></i>Chưa có kết quả</span>
+      <span class="lg-pd"><i style="background:var(--pending)"></i>Chưa có kết quả</span>
     </div>
     <div class="lg-grp lg-r">
-      <span><i style="background:var(--rep)"></i>Thắng</span>
-      <span class="lg-notup"><i style="background:var(--rep-dark)"></i>Không bầu lại</span>
+      <span class="lg-rw"><i style="background:var(--rep)"></i>Thắng</span>
+      <span class="lg-notup lg-rn"><i style="background:var(--rep-dark)"></i>Không bầu lại</span>
     </div>
   </div>
 </div>
@@ -269,6 +288,7 @@
     // Hạ viện bầu lại toàn bộ -> ẩn mục "Không bầu lại" trong chú thích
     var noNotUp = !dn && !rn;
     document.querySelectorAll('.ew-legend .lg-notup').forEach(function (el) { el.style.display = noNotUp ? 'none' : ''; });
+    document.querySelector('.ew-legend').classList.toggle('no-notup', noNotUp);
 
     if (data.updated && $('ew-foot')) {
       var d = new Date(data.updated);
