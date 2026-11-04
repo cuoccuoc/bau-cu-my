@@ -1,0 +1,22 @@
+# SỐ LIỆU BẦU CỬ MỸ
+# Cách sửa: chỉ đổi con số sau dấu "=", giữ nguyên phần chữ bên trái.
+# Sửa xong bấm nút xanh "Commit changes". Bảng ngoài trang tự đổi sau khoảng 1-2 phút.
+
+# ===== THƯỢNG VIỆN (100 ghế) =====
+thuong_vien_dan_chu_khong_bau_lai = 34
+thuong_vien_cong_hoa_khong_bau_lai = 31
+thuong_vien_dan_chu_thang = 9
+thuong_vien_cong_hoa_thang = 2
+thuong_vien_dan_chu_lat_ghe = 1
+thuong_vien_cong_hoa_lat_ghe = 0
+
+# ===== HẠ VIỆN (435 ghế) =====
+ha_vien_dan_chu_thang = 51
+ha_vien_cong_hoa_thang = 24
+ha_vien_dan_chu_lat_ghe = 1
+ha_vien_cong_hoa_lat_ghe = 0
+
+# Ghi chú:
+# _khong_bau_lai = ghế không bầu lại đợt này (Hạ viện không có mục này)
+# _thang         = ghế đã thắng trong đợt bầu này
+# _lat_ghe       = ghế giành được từ đảng kia

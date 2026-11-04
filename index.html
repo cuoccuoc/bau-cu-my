@@ -120,8 +120,8 @@
   </div>
 
   <div class="ew-barwrap">
-    <div class="ew-majority" id="ew-maj">50 ghế đa số</div>
-    <div class="ew-mline" id="ew-mline"></div>
+    <div class="ew-majority" id="ew-maj" style="left:50%">50 ghế đa số</div>
+    <div class="ew-mline" id="ew-mline" style="left:50%"></div>
     <div class="ew-bar">
       <div class="ew-seg" id="s-dn" style="background:var(--dem-dark)"><span></span></div>
       <div class="ew-seg" id="s-dw" style="background:var(--dem)"><span></span></div>
@@ -149,10 +149,9 @@
 <script>
 (function () {
   /* ====== CẤU HÌNH ======
-     DATA_URL: đường dẫn tới file dữ liệu (JSON trên máy chủ của bạn,
-               hoặc link Google Sheet "Xuất bản lên web" dạng CSV).
+     DATA_URL: file số liệu đặt cùng thư mục (so-lieu.txt, hoặc file JSON).
      REFRESH_SECONDS: bao lâu tải lại số liệu một lần. */
-  var DATA_URL = 'https://gw.vnexpress.net/cr/?name=widget_sheet_211';
+  var DATA_URL = 'so-lieu.txt';
   var REFRESH_SECONDS = 30;
   // Có thể đổi nguồn mà không sửa file: bau-cu-widget.html?data=duong-dan-khac
   var qs = new URLSearchParams(location.search);
@@ -166,17 +165,24 @@
 
   function $(id) { return document.getElementById(id); }
 
-  // CSV dạng: chamber,field,value  (vd: senate,dem_notUp,34)
-  function parseCSV(text) {
-    var out = {};
-    text.trim().split(/\r?\n/).forEach(function (line, i) {
-      var c = line.split(',').map(function (s) { return s.trim().replace(/^"|"$/g, ''); });
-      if (c.length < 3 || (i === 0 && c[0] === 'chamber')) return;
-      var ch = c[0], f = c[1], v = c[2];
-      if (ch === 'meta') { out[f] = v; return; }
-      out[ch] = out[ch] || { dem: {}, rep: {} };
-      var p = f.split('_');
-      if (p.length === 2) out[ch][p[0]][p[1]] = +v; else out[ch][f] = +v;
+  // File chữ dạng "thuong_vien_dan_chu_thang = 9" (dòng bắt đầu bằng # là ghi chú)
+  function parseTxt(text) {
+    var out = {}, CH = { thuong_vien: 'senate', ha_vien: 'house' },
+        PA = { dan_chu: 'dem', cong_hoa: 'rep' },
+        KEY = { khong_bau_lai: 'notUp', thang: 'won', lat_ghe: 'flipped' };
+    ['senate', 'house'].forEach(function (ch) {
+      out[ch] = { total: SEATS[ch].total, majority: SEATS[ch].majority,
+                  dem: { notUp: 0, won: 0, flipped: 0 }, rep: { notUp: 0, won: 0, flipped: 0 } };
+    });
+    text.split(/\r?\n/).forEach(function (line) {
+      line = line.replace(/#.*/, '').trim();
+      var m = line.match(/^([a-z_]+)\s*[=:]\s*(\d+)/i);
+      if (!m) return;
+      var k = m[1].toLowerCase(), v = parseInt(m[2], 10), ch, pa, key;
+      Object.keys(CH).forEach(function (p) { if (k.indexOf(p + '_') === 0) { ch = CH[p]; k = k.slice(p.length + 1); } });
+      Object.keys(PA).forEach(function (p) { if (k.indexOf(p + '_') === 0) { pa = PA[p]; k = k.slice(p.length + 1); } });
+      key = KEY[k];
+      if (ch && pa && key) out[ch][pa][key] = v;
     });
     return out;
   }
@@ -258,16 +264,26 @@
     sendHeight();
   }
 
+  function get(src) {
+    var url = src + (src.indexOf('?') < 0 ? '?' : '&') + '_=' + Date.now();
+    return fetch(url, { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      var lm = r.headers.get('last-modified');
+      return r.text().then(function (t) { return { text: t, modified: lm }; });
+    });
+  }
+
   function load() {
-    var url = DATA_URL + (DATA_URL.indexOf('?') < 0 ? '?' : '&') + '_=' + Date.now();
-    fetch(url, { cache: 'no-store' })
-      .then(function (r) { return r.text(); })
-      .then(function (txt) {
-        var t = txt.trim();
+    get(DATA_URL)
+      .then(function (res) {
+        var t = res.text.trim();
         if (t[0] === '{') {
           var j = JSON.parse(t);
           data = (j.data && j.data.data && j.data.data.data) ? parseSheet(j) : j;
-        } else data = parseCSV(t);
+        } else {
+          data = parseTxt(t);
+          if (res.modified) data.updated = res.modified;  // giờ sửa file lần cuối
+        }
         render();
       })
       .catch(function (e) { console.warn('Không tải được dữ liệu:', e); });
