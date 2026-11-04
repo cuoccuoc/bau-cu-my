@@ -5,7 +5,7 @@
 # ===== THƯỢNG VIỆN (100 ghế) =====
 thuong_vien_dan_chu_khong_bau_lai = 34
 thuong_vien_cong_hoa_khong_bau_lai = 31
-thuong_vien_dan_chu_thang = 16
+thuong_vien_dan_chu_thang = 17
 thuong_vien_cong_hoa_thang = 6
 thuong_vien_dan_chu_lat_ghe = 5
 thuong_vien_cong_hoa_lat_ghe = 0
