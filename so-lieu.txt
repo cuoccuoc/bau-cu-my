@@ -11,8 +11,8 @@ thuong_vien_dan_chu_lat_ghe = 5
 thuong_vien_cong_hoa_lat_ghe = 0
 
 # ===== HẠ VIỆN (435 ghế) =====
-ha_vien_dan_chu_thang = 151
-ha_vien_cong_hoa_thang = 96
+ha_vien_dan_chu_thang = 167
+ha_vien_cong_hoa_thang = 104
 ha_vien_dan_chu_lat_ghe = 10
 ha_vien_cong_hoa_lat_ghe = 0
 
