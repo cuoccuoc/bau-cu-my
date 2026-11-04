@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kết quả bầu cử Mỹ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ====== CẤU HÌNH MÀU ====== */
+  :root {
+    --dem-dark: #1747b5;   /* Dân chủ - không bầu lại */
+    --dem:      #2563eb;   /* Dân chủ - thắng */
+    --pending:  #c8d2de;   /* Chưa có kết quả */
+    --rep:      #dc2626;   /* Cộng hòa - thắng */
+    --rep-dark: #9b0b28;   /* Cộng hòa - không bầu lại */
+    --text: #111;
+    --muted: #444;
+    --line: #e5e2da;
+    --card: #fff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: transparent; }
+  body { font-family: Arial, Helvetica, sans-serif; color: var(--text); }
+
+  .ew-card {
+    max-width: 760px; margin: 0 auto; background: var(--card);
+    border: 1px solid var(--line); border-radius: 6px; padding: 30px 30px 24px;
+  }
+
+  /* Tabs */
+  .ew-tabs {
+    display: flex; gap: 4px; padding: 4px; background: #eeede9;
+    border: 1px solid #dcdad3; border-radius: 8px;
+  }
+  .ew-tab {
+    flex: 1; border: 0; background: transparent; padding: 13px 8px; border-radius: 6px;
+    font: 600 15px Arial, sans-serif; color: #555; cursor: pointer; transition: background .15s;
+  }
+  .ew-tab[aria-selected="true"] {
+    background: #fff; color: #111; font-weight: 700;
+    box-shadow: 0 0 0 1px #d8d6cf, 0 1px 2px rgba(0,0,0,.06);
+  }
+
+  /* Header */
+  .ew-head {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    padding: 20px 0 18px; border-bottom: 1px solid var(--line);
+  }
+  .ew-title { font-family: Merriweather, Georgia, serif; font-weight: 400; font-size: 23px; margin: 0; line-height: 1.3; }
+  .ew-badge {
+    flex-shrink: 0; display: inline-flex; align-items: center; gap: 7px;
+    background: #ecfdf3; border: 1px solid #b7ebcb; color: #1d5b3a;
+    border-radius: 4px; padding: 10px 10px; font-weight: 700; font-size: 13px; letter-spacing: 1px;
+  }
+  .ew-dot { width: 8px; height: 8px; border-radius: 50%; background: #22a35a; animation: ew-pulse 1.6s infinite; }
+  @keyframes ew-pulse { 50% { opacity: .35; } }
+
+  /* Numbers */
+  .ew-score { display: flex; justify-content: space-between; align-items: flex-end; padding-top: 18px; }
+  .ew-num { font-size: 66px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+  .ew-num.d { color: var(--dem); } .ew-num.r { color: var(--rep); text-align: right; }
+  .ew-party { font-weight: 700; font-size: 17px; margin-top: 12px; }
+  .ew-right { text-align: right; }
+
+  /* Bar */
+  .ew-barwrap { position: relative; margin-top: 30px; }
+  .ew-majority {
+    position: absolute; top: -26px; transform: translateX(-50%);
+    background: #fff; border: 1px solid #c9c9c9; border-radius: 4px;
+    font-size: 11px; padding: 2px 6px; white-space: nowrap; color: #333; z-index: 2;
+  }
+  .ew-mline { position: absolute; top: -4px; bottom: -14px; border-left: 1px dashed #888; z-index: 1; }
+  .ew-bar { display: flex; height: 48px; border-radius: 4px; overflow: hidden; background: var(--pending); }
+  .ew-seg {
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    color: #fff; font-weight: 700; font-size: 17px; transition: flex-basis .6s ease;
+    flex: 0 0 0;
+  }
+  .ew-seg.pending { color: #333; flex-shrink: 1; min-width: 0; }
+  .ew-seg.has { min-width: 32px; }   /* ô có ít ghế vẫn đủ rộng để hiện số */
+  .ew-seg.empty span { display: none; }
+
+  .ew-gain { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: #333; margin-top: 18px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+  .ew-gain b.d { color: var(--dem); } .ew-gain b.r { color: var(--rep); }
+
+  /* Legend */
+  .ew-legend { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px 18px; padding-top: 22px; font-size: 14px; color: var(--muted); }
+  .ew-legend i { display: inline-block; width: 12px; height: 12px; margin-right: 7px; vertical-align: -1px; }
+
+  .ew-foot { font-size: 12px; color: #888; margin-top: 14px; text-align: right; }
+
+  @media (max-width: 560px) {
+    .ew-card { padding: 16px; }
+    .ew-head { flex-direction: column; align-items: flex-start; }
+    .ew-title { font-size: 19px; }
+    .ew-num { font-size: 48px; }
+    .ew-seg { font-size: 14px; }
+    .ew-gain { flex-direction: column; gap: 4px; }
+    .ew-gain span:last-child { text-align: left; }
+    .ew-legend { justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="ew-card" id="ew">
+  <div class="ew-tabs" role="tablist">
+    <button class="ew-tab" role="tab" data-chamber="senate" aria-selected="true">Thượng viện</button>
+    <button class="ew-tab" role="tab" data-chamber="house" aria-selected="false">Hạ viện</button>
+  </div>
+
+  <div class="ew-head">
+    <h2 class="ew-title" id="ew-title">Kết quả bầu cử Thượng viện Mỹ</h2>
+    <span class="ew-badge"><span class="ew-dot"></span><span id="ew-count">0/100 ghế</span></span>
+  </div>
+
+  <div class="ew-score">
+    <div><div class="ew-num d" id="ew-dem">0</div><div class="ew-party">Dân chủ</div></div>
+    <div class="ew-right"><div class="ew-num r" id="ew-rep">0</div><div class="ew-party">Cộng hòa</div></div>
+  </div>
+
+  <div class="ew-barwrap">
+    <div class="ew-majority" id="ew-maj">50 ghế đa số</div>
+    <div class="ew-mline" id="ew-mline"></div>
+    <div class="ew-bar">
+      <div class="ew-seg" id="s-dn" style="background:var(--dem-dark)"><span></span></div>
+      <div class="ew-seg" id="s-dw" style="background:var(--dem)"><span></span></div>
+      <div class="ew-seg pending" id="s-p" style="background:var(--pending)"><span></span></div>
+      <div class="ew-seg" id="s-rw" style="background:var(--rep)"><span></span></div>
+      <div class="ew-seg" id="s-rn" style="background:var(--rep-dark)"><span></span></div>
+    </div>
+  </div>
+
+  <div class="ew-gain">
+    <span>Giành <b class="d" id="ew-dflip">0</b> ghế từ Cộng hòa</span>
+    <span>Giành <b class="r" id="ew-rflip">0</b> ghế từ Dân chủ</span>
+  </div>
+
+  <div class="ew-legend">
+    <span class="lg-notup"><i style="background:var(--dem-dark)"></i>Không bầu lại</span>
+    <span><i style="background:var(--dem)"></i>Thắng</span>
+    <span><i style="background:var(--pending)"></i>Chưa có kết quả</span>
+    <span><i style="background:var(--rep)"></i>Thắng</span>
+    <span class="lg-notup"><i style="background:var(--rep-dark)"></i>Không bầu lại</span>
+  </div>
+  <div class="ew-foot" id="ew-foot"></div>
+</div>
+
+<script>
+(function () {
+  /* ====== CẤU HÌNH ======
+     DATA_URL: đường dẫn tới file dữ liệu (JSON trên máy chủ của bạn,
+               hoặc link Google Sheet "Xuất bản lên web" dạng CSV).
+     REFRESH_SECONDS: bao lâu tải lại số liệu một lần. */
+  var DATA_URL = 'https://gw.vnexpress.net/cr/?name=widget_sheet_211';
+  var REFRESH_SECONDS = 30;
+  // Có thể đổi nguồn mà không sửa file: bau-cu-widget.html?data=duong-dan-khac
+  var qs = new URLSearchParams(location.search);
+  if (qs.get('data')) DATA_URL = qs.get('data');
+  var SEATS = { senate: { total: 100, majority: 50 }, house: { total: 435, majority: 218 } };
+
+  var NAMES = { senate: 'Thượng viện', house: 'Hạ viện' };
+  var data = null;
+  var current = (location.hash === '#house') ? 'house' : 'senate';
+  var shown = { dem: 0, rep: 0 };
+
+  function $(id) { return document.getElementById(id); }
+
+  // CSV dạng: chamber,field,value  (vd: senate,dem_notUp,34)
+  function parseCSV(text) {
+    var out = {};
+    text.trim().split(/\r?\n/).forEach(function (line, i) {
+      var c = line.split(',').map(function (s) { return s.trim().replace(/^"|"$/g, ''); });
+      if (c.length < 3 || (i === 0 && c[0] === 'chamber')) return;
+      var ch = c[0], f = c[1], v = c[2];
+      if (ch === 'meta') { out[f] = v; return; }
+      out[ch] = out[ch] || { dem: {}, rep: {} };
+      var p = f.split('_');
+      if (p.length === 2) out[ch][p[0]][p[1]] = +v; else out[ch][f] = +v;
+    });
+    return out;
+  }
+
+  // Bảng tính dạng "Chỉ tiêu | Thượng viện | Hạ viện" (nguồn số liệu đối tác)
+  function parseSheet(json) {
+    var rows = json.data.data.data, upd = json.data.updated_at;
+    var out = { updated: upd ? new Date(upd * 1000).toISOString() : null };
+    ['senate', 'house'].forEach(function (ch) {
+      out[ch] = { total: SEATS[ch].total, majority: SEATS[ch].majority, dem: {}, rep: {} };
+    });
+    function num(v) { var n = parseInt(v, 10); return isNaN(n) ? 0 : n; }
+    rows.forEach(function (r) {
+      var t = (r.chi_tieu_bau_cu || '').toLowerCase(), key = null, party = null;
+      if (t.indexOf('không bầu lại') >= 0) key = 'notUp';
+      else if (t.indexOf('thắng mới') >= 0) key = 'won';
+      else if (t.indexOf('lật ghế') >= 0) key = 'flipped';
+      if (!key) return;
+      if (key === 'flipped') party = /dân chủ giành/.test(t) ? 'dem' : (/cộng hòa giành/.test(t) ? 'rep' : null);
+      else party = t.indexOf('dân chủ') >= 0 ? 'dem' : (t.indexOf('cộng hòa') >= 0 ? 'rep' : null);
+      if (!party) return;
+      out.senate[party][key] = num(r.thuong_vien_senate_100_ghe);
+      out.house[party][key] = num(r.ha_vien_house_435_ghe);
+    });
+    return out;
+  }
+
+  function animate(el, from, to) {
+    var t0 = performance.now(), dur = 600;
+    function step(t) {
+      var k = Math.min(1, (t - t0) / dur);
+      el.textContent = Math.round(from + (to - from) * k);
+      if (k < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function setSeg(id, n, total) {
+    var el = $(id), pct = total ? n / total * 100 : 0;
+    el.style.flexBasis = pct + '%';
+    el.querySelector('span').textContent = n;
+    el.classList.toggle('has', n > 0 && !el.classList.contains('pending'));
+    el.classList.toggle('empty', n === 0);
+  }
+
+  function render() {
+    if (!data || !data[current]) return;
+    var c = data[current], T = c.total, M = c.majority;
+    var dn = c.dem.notUp || 0, dw = c.dem.won || 0, rn = c.rep.notUp || 0, rw = c.rep.won || 0;
+    var dem = dn + dw, rep = rn + rw, pending = Math.max(0, T - dem - rep);
+
+    $('ew-title').textContent = 'Kết quả bầu cử ' + NAMES[current] + ' Mỹ';
+    $('ew-count').textContent = (dem + rep) + '/' + T + ' ghế';
+    animate($('ew-dem'), shown.dem, dem);
+    animate($('ew-rep'), shown.rep, rep);
+    shown = { dem: dem, rep: rep };
+
+    setSeg('s-dn', dn, T); setSeg('s-dw', dw, T); setSeg('s-p', pending, T);
+    setSeg('s-rw', rw, T); setSeg('s-rn', rn, T);
+
+    var pos = M / T * 100 + '%';
+    $('ew-maj').style.left = pos; $('ew-mline').style.left = pos;
+    $('ew-maj').textContent = M + ' ghế đa số';
+    $('ew-dflip').textContent = c.dem.flipped || 0;
+    $('ew-rflip').textContent = c.rep.flipped || 0;
+    // Hạ viện bầu lại toàn bộ -> ẩn mục "Không bầu lại" trong chú thích
+    var noNotUp = !dn && !rn;
+    document.querySelectorAll('.ew-legend .lg-notup').forEach(function (el) { el.style.display = noNotUp ? 'none' : ''; });
+
+    if (data.updated) {
+      var d = new Date(data.updated);
+      if (!isNaN(d)) $('ew-foot').textContent = 'Cập nhật lúc ' +
+        d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ' ' +
+        d.toLocaleDateString('vi-VN');
+    }
+    document.querySelectorAll('.ew-tab').forEach(function (b) {
+      b.setAttribute('aria-selected', b.dataset.chamber === current);
+    });
+    sendHeight();
+  }
+
+  function load() {
+    var url = DATA_URL + (DATA_URL.indexOf('?') < 0 ? '?' : '&') + '_=' + Date.now();
+    fetch(url, { cache: 'no-store' })
+      .then(function (r) { return r.text(); })
+      .then(function (txt) {
+        var t = txt.trim();
+        if (t[0] === '{') {
+          var j = JSON.parse(t);
+          data = (j.data && j.data.data && j.data.data.data) ? parseSheet(j) : j;
+        } else data = parseCSV(t);
+        render();
+      })
+      .catch(function (e) { console.warn('Không tải được dữ liệu:', e); });
+  }
+
+  // Báo chiều cao cho trang cha để iframe tự giãn
+  function sendHeight() {
+    if (window.parent !== window) {
+      window.parent.postMessage({ ewHeight: document.documentElement.scrollHeight }, '*');
+    }
+  }
+  window.addEventListener('resize', sendHeight);
+
+  document.querySelectorAll('.ew-tab').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (current === b.dataset.chamber) return;
+      current = b.dataset.chamber;
+      shown = { dem: 0, rep: 0 };
+      render();
+    });
+  });
+
+  load();
+  setInterval(load, REFRESH_SECONDS * 1000);
+})();
+</script>
+</body>
+</html>
