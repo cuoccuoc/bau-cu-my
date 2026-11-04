@@ -86,26 +86,31 @@
   .ew-gain b.d { color: var(--dem); } .ew-gain b.r { color: var(--rep); }
 
   /* Legend */
-  .ew-legend { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px 18px; padding-top: 22px; font-size: 14px; color: var(--muted); }
+  .ew-legend { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px 18px; padding-top: 22px; font-size: 14px; color: var(--muted); }
+  .lg-grp { display: flex; gap: 8px 40px; }
+  .lg-grp span { white-space: nowrap; }
   .ew-legend i { display: inline-block; width: 12px; height: 12px; margin-right: 7px; vertical-align: -1px; }
 
   .ew-foot { font-size: 12px; color: #888; margin-top: 14px; text-align: right; }
 
   @media (max-width: 560px) {
-    .ew-card { padding: 14px; }
-    .ew-tab { padding: 10px 6px; font-size: 14px; }
-    .ew-head { padding: 14px 0 12px; }
-    .ew-title { font-size: 16px; }
-    .ew-badge { padding: 6px 7px; font-size: 11px; letter-spacing: .5px; }
-    .ew-score { padding-top: 12px; }
-    .ew-num { font-size: 46px; }
-    .ew-party { font-size: 15px; margin-top: 6px; }
-    .ew-barwrap { margin-top: 28px; }
-    .ew-bar { height: 40px; }
-    .ew-seg { font-size: 14px; }
-    .ew-seg.has { min-width: 26px; }
-    .ew-gain { font-size: 12px; margin-top: 16px; padding-bottom: 14px; }
-    .ew-legend { justify-content: flex-start; gap: 6px 14px; padding-top: 14px; font-size: 12px; }
+    .ew-card { padding: 16px 14px; }
+    .ew-tab { padding: 12px 6px; font-size: 15px; }
+    .ew-head { padding: 18px 0 16px; }
+    .ew-title { font-size: 17px; }
+    .ew-badge { padding: 7px 8px; font-size: 11px; letter-spacing: .5px; }
+    .ew-score { padding-top: 18px; }
+    .ew-num { font-size: 56px; }
+    .ew-party { font-size: 16px; margin-top: 10px; }
+    .ew-barwrap { margin-top: 34px; }
+    .ew-bar { height: 46px; }
+    .ew-seg { font-size: 15px; }
+    .ew-seg.has { min-width: 28px; }
+    .ew-gain { font-size: 13px; margin-top: 18px; padding-bottom: 20px; }
+    .ew-legend { gap: 8px; padding-top: 20px; font-size: 13px; }
+    .lg-grp { flex-direction: column; gap: 8px; }
+    .lg-r { align-items: flex-end; }
+    .ew-gain span:last-child { text-align: right; }
     .ew-foot { margin-top: 8px; }
   }
 </style>
@@ -145,13 +150,18 @@
   </div>
 
   <div class="ew-legend">
-    <span class="lg-notup"><i style="background:var(--dem-dark)"></i>Không bầu lại</span>
-    <span><i style="background:var(--dem)"></i>Thắng</span>
-    <span><i style="background:var(--pending)"></i>Chưa có kết quả</span>
-    <span><i style="background:var(--rep)"></i>Thắng</span>
-    <span class="lg-notup"><i style="background:var(--rep-dark)"></i>Không bầu lại</span>
+    <div class="lg-grp lg-d">
+      <span class="lg-notup"><i style="background:var(--dem-dark)"></i>Không bầu lại</span>
+      <span><i style="background:var(--dem)"></i>Thắng</span>
+    </div>
+    <div class="lg-grp lg-p">
+      <span><i style="background:var(--pending)"></i>Chưa có kết quả</span>
+    </div>
+    <div class="lg-grp lg-r">
+      <span><i style="background:var(--rep)"></i>Thắng</span>
+      <span class="lg-notup"><i style="background:var(--rep-dark)"></i>Không bầu lại</span>
+    </div>
   </div>
-  <div class="ew-foot" id="ew-foot"></div>
 </div>
 
 <script>
@@ -260,7 +270,7 @@
     var noNotUp = !dn && !rn;
     document.querySelectorAll('.ew-legend .lg-notup').forEach(function (el) { el.style.display = noNotUp ? 'none' : ''; });
 
-    if (data.updated) {
+    if (data.updated && $('ew-foot')) {
       var d = new Date(data.updated);
       if (!isNaN(d)) $('ew-foot').textContent = 'Cập nhật lúc ' +
         d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ' ' +
