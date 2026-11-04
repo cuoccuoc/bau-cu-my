@@ -26,6 +26,7 @@
   .ew-card {
     max-width: 760px; margin: 0 auto; background: var(--card);
     border: 1px solid var(--line); border-radius: 6px; padding: 30px 30px 24px;
+    min-height: 100vh;   /* khung trắng luôn phủ kín khung nhúng, không lộ nền trang */
   }
 
   /* Tabs */
@@ -91,14 +92,21 @@
   .ew-foot { font-size: 12px; color: #888; margin-top: 14px; text-align: right; }
 
   @media (max-width: 560px) {
-    .ew-card { padding: 16px; }
-    .ew-head { flex-direction: column; align-items: flex-start; }
-    .ew-title { font-size: 19px; }
-    .ew-num { font-size: 48px; }
+    .ew-card { padding: 14px; }
+    .ew-tab { padding: 10px 6px; font-size: 14px; }
+    .ew-head { padding: 14px 0 12px; }
+    .ew-title { font-size: 16px; }
+    .ew-badge { padding: 6px 7px; font-size: 11px; letter-spacing: .5px; }
+    .ew-score { padding-top: 12px; }
+    .ew-num { font-size: 46px; }
+    .ew-party { font-size: 15px; margin-top: 6px; }
+    .ew-barwrap { margin-top: 28px; }
+    .ew-bar { height: 40px; }
     .ew-seg { font-size: 14px; }
-    .ew-gain { flex-direction: column; gap: 4px; }
-    .ew-gain span:last-child { text-align: left; }
-    .ew-legend { justify-content: flex-start; }
+    .ew-seg.has { min-width: 26px; }
+    .ew-gain { font-size: 12px; margin-top: 16px; padding-bottom: 14px; }
+    .ew-legend { justify-content: flex-start; gap: 6px 14px; padding-top: 14px; font-size: 12px; }
+    .ew-foot { margin-top: 8px; }
   }
 </style>
 </head>
