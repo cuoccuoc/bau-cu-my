@@ -6,13 +6,13 @@
 thuong_vien_dan_chu_khong_bau_lai = 34
 thuong_vien_cong_hoa_khong_bau_lai = 31
 thuong_vien_dan_chu_thang = 19
-thuong_vien_cong_hoa_thang = 10
+thuong_vien_cong_hoa_thang = 11
 thuong_vien_dan_chu_lat_ghe = 7
 thuong_vien_cong_hoa_lat_ghe = 0
 
 # ===== HẠ VIỆN (435 ghế) =====
 ha_vien_dan_chu_thang = 220
-ha_vien_cong_hoa_thang = 127
+ha_vien_cong_hoa_thang = 128
 ha_vien_dan_chu_lat_ghe = 25
 ha_vien_cong_hoa_lat_ghe = 0
 
